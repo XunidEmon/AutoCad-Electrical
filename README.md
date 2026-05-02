@@ -6,7 +6,7 @@ An Arduino-based system to calculate the required number of **lights and fans** 
 
 ---
 
-## 📌 Overview
+## Overview
 
 This project helps design efficient room lighting by calculating:
 
@@ -17,7 +17,7 @@ It uses engineering concepts like **Room Index (RI)** and **Utilization Factor (
 
 ---
 
-## 📐 Formula Used
+## Formula Used
 
 N = \frac{E \times A}{n \times F \times UF \times LLF}
 
@@ -336,7 +336,7 @@ It is useful for **basic electrical design, load estimation, and wiring planning
 
 ---
 
-## ⚙️ Features
+## Features
 
 * Room type selection (Bedroom, Kitchen, etc.)
 * Auto appliance setup (fans, exhaust, sockets)
