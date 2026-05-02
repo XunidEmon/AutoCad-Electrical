@@ -1,27 +1,27 @@
-# 💡 Light and Fan Calculator (Arduino)
+#  Light and Fan Calculator (Arduino)
 
 An Arduino-based system to calculate the required number of **lights and fans** for different room types using the **Lumen Method**.
 
 ---
 
-## 📌 Overview
+##  Overview
 
 This project helps design efficient room lighting by calculating:
 
-* 💡 Required number of lights
-* 🌬️ Required number of ceiling/exhaust fans
+*  Required number of lights
+*  Required number of ceiling/exhaust fans
 
 It uses engineering concepts like **Room Index (RI)** and **Utilization Factor (UF)**.
 
 ---
 
-## 📐 Formula Used
+##  Formula Used
 
 N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## ⚙️ Features
+##  Features
 
 * Multiple room types (Bedroom, Kitchen, etc.)
 * Input in feet & inches
@@ -33,20 +33,20 @@ N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## 🛠️ Hardware
+##  Hardware
 
 * Arduino UNO
 * USB Cable
 
 ---
 
-## 💻 Software
+##  Software
 
 * Arduino IDE
 
 ---
 
-## 🚀 How to Use
+##  How to Use
 
 1. Upload the code to Arduino
 2. Open Serial Monitor (9600 baud)
@@ -56,7 +56,7 @@ N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## 💻 Arduino Code
+##  Arduino Code
 
 ```cpp
 #include <math.h>
@@ -178,13 +178,3 @@ void loop() {
 
 ---
 
-## 👨‍💻 Author
-
-MD Emon
-EEE Student 
-
----
-
-## ⭐ Support
-
-If you like this project, give it a ⭐ on GitHub!
