@@ -1,6 +1,6 @@
 # AutoCad-Electrical
 This system is designed to calculate the required number of lighting fixtures based on room dimensions and standard illumination levels. It also estimates electrical load, current, and suggests appropriate wiring size for residential applications.
-# 💡 Light and Fan Calculator (Arduino)
+# Light and Fan Calculator (Arduino)
 
 An Arduino-based system to calculate the required number of **lights and fans** for different room types using the **Lumen Method**.
 
@@ -10,8 +10,8 @@ An Arduino-based system to calculate the required number of **lights and fans** 
 
 This project helps design efficient room lighting by calculating:
 
-* 💡 Required number of lights
-* 🌬️ Required number of ceiling/exhaust fans
+* Required number of lights
+* Required number of ceiling/exhaust fans
 
 It uses engineering concepts like **Room Index (RI)** and **Utilization Factor (UF)**.
 
@@ -23,7 +23,7 @@ N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## ⚙️ Features
+## Features
 
 * Multiple room types (Bedroom, Kitchen, etc.)
 * Input in feet & inches
@@ -35,20 +35,20 @@ N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## 🛠️ Hardware
+## Hardware
 
 * Arduino UNO
 * USB Cable
 
 ---
 
-## 💻 Software
+## Software
 
 * Arduino IDE
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. Upload the code to Arduino
 2. Open Serial Monitor (9600 baud)
@@ -58,7 +58,7 @@ N = \frac{E \times A}{n \times F \times UF \times LLF}
 
 ---
 
-## 💻 Arduino Code
+## Arduino Code
 
 ```cpp
 #include <math.h>
@@ -317,19 +317,19 @@ void calculateAndShow() {
 
 
 
-# ⚡ Load & Current Calculator (Arduino)
+# Load & Current Calculator (Arduino)
 
 An Arduino-based system to calculate **electrical load and current** for different room types.
 This project also provides **wire size recommendations** based on calculated current.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 This calculator helps estimate:
 
-* ⚡ Total electrical load (Watt)
-* 🔌 Current consumption (Ampere)
+* Total electrical load (Watt)
+* Current consumption (Ampere)
 * 🧵 مناسب wire size for safe installation
 
 It is useful for **basic electrical design, load estimation, and wiring planning**.
@@ -338,17 +338,17 @@ It is useful for **basic electrical design, load estimation, and wiring planning
 
 ## ⚙️ Features
 
-* 🏠 Room type selection (Bedroom, Kitchen, etc.)
-* 🔧 Auto appliance setup (fans, exhaust, sockets)
-* 💡 Manual input for lights and fans
-* ⚡ Total load calculation
-* 🔌 Current calculation using power formula
-* 🧵 Wire size recommendation
-* 🔁 Repeat calculation option
+* Room type selection (Bedroom, Kitchen, etc.)
+* Auto appliance setup (fans, exhaust, sockets)
+* Manual input for lights and fans
+* Total load calculation
+* Current calculation using power formula
+* Wire size recommendation
+* Repeat calculation option
 
 ---
 
-## 📐 Formula Used
+## Formula Used
 
 ### Current Calculation
 
@@ -363,7 +363,7 @@ Where:
 
 ---
 
-## 🛠️ Hardware Requirements
+## Hardware Requirements
 
 * Arduino UNO
 * USB Cable
@@ -371,13 +371,13 @@ Where:
 
 ---
 
-## 💻 Software Requirements
+## Software Requirements
 
 * Arduino IDE
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. Upload the code to Arduino
 2. Open Serial Monitor (9600 baud)
@@ -391,7 +391,7 @@ Where:
 
 ---
 
-## 💻 Arduino Code
+## Arduino Code
 
 ```cpp id="p9x2kf"
 #include <math.h>
@@ -474,7 +474,7 @@ void loop() {
 
 ---
 
-## 📊 Output Includes
+## Output Includes
 
 * Total Load (Watt)
 * Current (Ampere)
@@ -482,16 +482,3 @@ void loop() {
 
 ---
 
-
----
-
-## 👨‍💻 Author
-
-**MD Emon**
-EEE Student
-
----
-
-## ⭐ Support
-
-If you found this useful, give it a ⭐ on GitHub!
