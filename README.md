@@ -1,5 +1,11 @@
-# AutoCad-Electrical
+#  AutoCad-Electrical
+
 This system is designed to calculate the required number of lighting fixtures based on room dimensions and standard illumination levels. It also estimates electrical load, current, and suggests appropriate wiring size for residential applications.
+
+This project has been developed based on practical assumptions and real-world data. You are welcome to modify, customize, and improve the system according to your own requirements and design approach.
+
+If you need any help understanding or extending this project, feel free to contact me.
+
 # Light and Fan Calculator (Arduino)
 
 An Arduino-based system to calculate the required number of **lights and fans** for different room types using the **Lumen Method**.
