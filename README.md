@@ -329,7 +329,7 @@ This project also provides **wire size recommendations** based on calculated cur
 This calculator helps estimate:
 
 * Total electrical load (Watt)
-* Current consumption (Ampere)اسب w
+* Current consumption (Ampere)
 
 It is useful for **basic electrical design, load estimation, and wiring planning**.
 
