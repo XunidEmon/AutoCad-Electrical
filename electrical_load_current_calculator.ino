@@ -1,35 +1,35 @@
-# ⚡ Load & Current Calculator (Arduino)
+# Load & Current Calculator (Arduino)
 
 An Arduino-based system to calculate **electrical load and current** for different room types.
 This project also provides **wire size recommendations** based on calculated current.
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 This calculator helps estimate:
 
-* ⚡ Total electrical load (Watt)
-* 🔌 Current consumption (Ampere)
-* 🧵 مناسب wire size for safe installation
+* Total electrical load (Watt)
+* Current consumption (Ampere)
+* wire size for safe installation
 
 It is useful for **basic electrical design, load estimation, and wiring planning**.
 
 ---
 
-## ⚙️ Features
+##  Features
 
-* 🏠 Room type selection (Bedroom, Kitchen, etc.)
-* 🔧 Auto appliance setup (fans, exhaust, sockets)
-* 💡 Manual input for lights and fans
-* ⚡ Total load calculation
-* 🔌 Current calculation using power formula
-* 🧵 Wire size recommendation
-* 🔁 Repeat calculation option
+*  Room type selection (Bedroom, Kitchen, etc.)
+*  Auto appliance setup (fans, exhaust, sockets)
+*  Manual input for lights and fans
+*  Total load calculation
+*  Current calculation using power formula
+*  Wire size recommendation
+*  Repeat calculation option
 
 ---
 
-## 📐 Formula Used
+##  Formula Used
 
 ### Current Calculation
 
@@ -44,7 +44,7 @@ Where:
 
 ---
 
-## 🛠️ Hardware Requirements
+##  Hardware Requirements
 
 * Arduino UNO
 * USB Cable
@@ -52,13 +52,13 @@ Where:
 
 ---
 
-## 💻 Software Requirements
+##  Software Requirements
 
 * Arduino IDE
 
 ---
 
-## 🚀 How to Use
+##  How to Use
 
 1. Upload the code to Arduino
 2. Open Serial Monitor (9600 baud)
@@ -72,7 +72,7 @@ Where:
 
 ---
 
-## 💻 Arduino Code
+##  Arduino Code
 
 ```cpp id="p9x2kf"
 #include <math.h>
@@ -155,7 +155,7 @@ void loop() {
 
 ---
 
-## 📊 Output Includes
+##  Output Includes
 
 * Total Load (Watt)
 * Current (Ampere)
@@ -164,13 +164,3 @@ void loop() {
 ---
 
 
-## 👨‍💻 Author
-
-**MD Emon**
-EEE Student 
-
----
-
-## ⭐ Support
-
-If you found this useful, give it a ⭐ on GitHub!
