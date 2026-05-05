@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lighting Design Calculator | Room Illumination Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .dimension-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .dimension-field {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dimension-field input {
+            flex: 1;
+        }
+
+        .dimension-field span {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .lighting-section {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .fan-section {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            color: white;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .reset-btn {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .dimension-input {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-card">
+            <div class="header">
+                <h1>💡 Lighting Design Calculator</h1>
+                <p>Calculate required lights and fans for any room</p>
+            </div>
+            <div class="content">
+                <form id="calculatorForm">
+                    <div class="form-group">
+                        <label>🏠 Room Type</label>
+                        <select id="roomType" required>
+                            <option value="1">Bedroom (100 lux)</option>
+                            <option value="2">Drawing Room (150 lux)</option>
+                            <option value="3">Dining Room (150 lux)</option>
+                            <option value="4">Kitchen (160 lux)</option>
+                            <option value="5">Toilet (100 lux)</option>
+                            <option value="6">Passage & Stairs (80 lux)</option>
+                            <option value="7">Balcony (60 lux)</option>
+                            <option value="8">Outside (40 lux)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📏 Length</label>
+                        <div class="dimension-input">
+                            <div class="dimension-field">
+                                <input type="number" id="lengthFeet" placeholder="Feet" step="1" required>
+                                <span>ft</span>
+                            </div>
+                            <div class="dimension-field">
+                                <input type="number" id="lengthInches" placeholder="Inches" step="0.1" min="0" max="11.999" required>
+                                <span>in</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📏 Width</label>
+                        <div class="dimension-input">
+                            <div class="dimension-field">
+                                <input type="number" id="widthFeet" placeholder="Feet" step="1" required>
+                                <span>ft</span>
+                            </div>
+                            <div class="dimension-field">
+                                <input type="number" id="widthInches" placeholder="Inches" step="0.1" min="0" max="11.999" required>
+                                <span>in</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit">Calculate Now 🚀</button>
+                    <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+                </form>
+
+                <div id="results" class="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const RI_VALUES = [0.75, 1.00, 1.25, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00];
+        const UF_VALUES = [0.30, 0.37, 0.41, 0.45, 0.52, 0.57, 0.60, 0.65, 0.69];
+        const LLF = 0.9;
+        const N = 1;
+        const F = 1800;
+
+        function calculateUF(ri) {
+            if (ri <= RI_VALUES[0]) {
+                let slope = (UF_VALUES[1] - UF_VALUES[0]) / (RI_VALUES[1] - RI_VALUES[0]);
+                let uf = UF_VALUES[0] - (RI_VALUES[0] - ri) * slope;
+                return Math.max(0.19, uf);
+            }
+            
+            if (ri >= RI_VALUES[RI_VALUES.length - 1]) {
+                let slope = (UF_VALUES[UF_VALUES.length - 1] - UF_VALUES[UF_VALUES.length - 2]) / 
+                           (RI_VALUES[RI_VALUES.length - 1] - RI_VALUES[RI_VALUES.length - 2]);
+                let uf = UF_VALUES[UF_VALUES.length - 1] + (ri - RI_VALUES[RI_VALUES.length - 1]) * slope;
+                return Math.min(0.85, uf);
+            }
+            
+            for (let i = 0; i < RI_VALUES.length - 1; i++) {
+                if (ri >= RI_VALUES[i] && ri <= RI_VALUES[i + 1]) {
+                    return UF_VALUES[i] + (ri - RI_VALUES[i]) * (UF_VALUES[i + 1] - UF_VALUES[i]) / (RI_VALUES[i + 1] - RI_VALUES[i]);
+                }
+            }
+            return 0.30;
+        }
+
+        function calculate() {
+            const roomType = parseInt(document.getElementById('roomType').value);
+            let lengthFeet = parseFloat(document.getElementById('lengthFeet').value);
+            let lengthInches = parseFloat(document.getElementById('lengthInches').value);
+            let widthFeet = parseFloat(document.getElementById('widthFeet').value);
+            let widthInches = parseFloat(document.getElementById('widthInches').value);
+
+            // Validation
+            if (isNaN(lengthFeet) || lengthFeet <= 0) {
+                alert('Please enter valid length (positive number)');
+                return false;
+            }
+            if (isNaN(lengthInches) || lengthInches < 0 || lengthInches >= 12) {
+                alert('Please enter valid inches (0 to 11.999)');
+                return false;
+            }
+            if (isNaN(widthFeet) || widthFeet <= 0) {
+                alert('Please enter valid width (positive number)');
+                return false;
+            }
+            if (isNaN(widthInches) || widthInches < 0 || widthInches >= 12) {
+                alert('Please enter valid inches (0 to 11.999)');
+                return false;
+            }
+
+            let E_TARGET;
+            switch(roomType) {
+                case 1: E_TARGET = 100; break;
+                case 2: E_TARGET = 150; break;
+                case 3: E_TARGET = 150; break;
+                case 4: E_TARGET = 160; break;
+                case 5: E_TARGET = 100; break;
+                case 6: E_TARGET = 80; break;
+                case 7: E_TARGET = 60; break;
+                case 8: E_TARGET = 40; break;
+                default: E_TARGET = 100;
+            }
+
+            // Convert to meters
+            let length_m = (lengthFeet * 0.3048) + (lengthInches * 0.0254);
+            let width_m = (widthFeet * 0.3048) + (widthInches * 0.0254);
+            
+            let hm = 2.0;
+            let ri = (length_m * width_m) / (hm * (length_m + width_m));
+            let uf = calculateUF(ri);
+            let area = length_m * width_m;
+            let N_float = (E_TARGET * area) / (N * F * uf * LLF);
+            let N_int = Math.ceil(N_float);
+            let N_rounded = Math.round(N_float * 100) / 100;
+            let area_sqft = area * 10.764;
+            
+            // Calculate fans
+            let fans = 0;
+            let exhaust_fans = 0;
+            
+            if (roomType == 5) {
+                exhaust_fans = 1;
+            } else if (roomType == 4) {
+                exhaust_fans = 2;
+            } else if (roomType == 6 || roomType == 7 || roomType == 8) {
+                fans = 0;
+                exhaust_fans = 0;
+            } else {
+                fans = Math.floor(area_sqft / 100);
+                if ((area_sqft / 100) > fans) fans++;
+            }
+            
+            // Calculate lights
+            let bulbs = 0;
+            let tubelight = 0;
+            
+            if (roomType == 4 || roomType == 5 || roomType == 7 || roomType == 8) {
+                bulbs = N_int;
+                tubelight = 0;
+            } else {
+                if (N_float <= 1.5) {
+                    tubelight = 1;
+                    bulbs = 0;
+                } else if (N_float <= 2.5) {
+                    tubelight = 1;
+                    bulbs = 2;
+                } else if (N_float <= 3.5) {
+                    tubelight = 2;
+                    bulbs = 2;
+                } else {
+                    tubelight = Math.round(N_float / 2);
+                    bulbs = Math.round(N_float / 2);
+                }
+            }
+
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            const roomNames = ['', 'Bedroom', 'Drawing Room', 'Dining Room', 'Kitchen', 'Toilet', 'Passage & Stairs', 'Balcony', 'Outside'];
+            
+            let lightHtml = '';
+            if (roomType == 4 || roomType == 5 || roomType == 7 || roomType == 8) {
+                lightHtml = `<div class="lighting-section">
+                    <strong>💡 Lighting:</strong> ${bulbs} bulb${bulbs !== 1 ? 's' : ''}
+                </div>`;
+            } else {
+                lightHtml = `<div class="lighting-section">
+                    <strong>💡 Lighting:</strong> ${tubelight} tubelight${tubelight !== 1 ? 's' : ''} + ${bulbs} bulb${bulbs !== 1 ? 's' : ''}
+                </div>`;
+            }
+            
+            let fanHtml = '';
+            if (roomType == 5) {
+                fanHtml = `<div class="fan-section">
+                    <strong>🌀 Fan:</strong> 1 exhaust fan
+                </div>`;
+            } else if (roomType == 4) {
+                fanHtml = `<div class="fan-section">
+                    <strong>🌀 Fan:</strong> 2 exhaust fans
+                </div>`;
+            } else if (roomType == 6 || roomType == 7 || roomType == 8) {
+                fanHtml = `<div class="fan-section">
+                    <strong>🌀 Fan:</strong> None required
+                </div>`;
+            } else {
+                fanHtml = `<div class="fan-section">
+                    <strong>🌀 Fan:</strong> ${fans} ceiling fan${fans !== 1 ? 's' : ''}
+                </div>`;
+            }
+            
+            resultsDiv.innerHTML = `
+                <h3 style="margin-bottom: 15px;">📊 Calculation Results</h3>
+                <div class="result-item">
+                    <div class="result-label">Room Type</div>
+                    <div class="result-value">${roomNames[roomType]} (${E_TARGET} lux)</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Dimensions</div>
+                    <div class="result-value">${lengthFeet}' ${lengthInches}" × ${widthFeet}' ${widthInches}"</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Area</div>
+                    <div class="result-value">${area.toFixed(2)} m² (${area_sqft.toFixed(2)} sq ft)</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Room Index (RI)</div>
+                    <div class="result-value">${ri.toFixed(3)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Utilization Factor (UF)</div>
+                    <div class="result-value">${uf.toFixed(4)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Required Lamps (N)</div>
+                    <div class="result-value">${N_rounded} (rounded up to ${N_int})</div>
+                </div>
+                ${lightHtml}
+                ${fanHtml}
+            `;
+            resultsDiv.classList.add('show');
+            
+            return false;
+        }
+
+        function resetForm() {
+            document.getElementById('calculatorForm').reset();
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('results').innerHTML = '';
+        }
+
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculate();
+        });
+    </script>
+</body>
+</html>
