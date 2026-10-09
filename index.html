@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ AutoCad Electrical — Complete Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --bg: #0a0a1f;
+  --card: rgba(255,255,255,0.05);
+  --card-hover: rgba(255,255,255,0.09);
+  --border: rgba(255,255,255,0.1);
+  --border-strong: rgba(255,255,255,0.2);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.6);
+  --muted-2: rgba(255,255,255,0.4);
+  --accent-1: #a855f7;
+  --accent-2: #6366f1;
+  --accent-3: #06b6d4;
+  --accent-4: #f59e0b;
+  --danger: #f43f5e;
+  --success: #10b981;
+}
+
+[data-theme="light"] {
+  --bg: #f5f3ff;
+  --card: rgba(255,255,255,0.75);
+  --card-hover: rgba(255,255,255,1);
+  --border: rgba(99,102,241,0.15);
+  --border-strong: rgba(99,102,241,0.3);
+  --text: #1e1b4b;
+  --muted: #4c4a7a;
+  --muted-2: #8886a8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background 0.5s,color 0.5s;
+}
+
+/* AURORA */
+.aurora { position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
+.blob {
+  position:absolute; border-radius:50%;
+  filter:blur(100px); opacity:0.5;
+  animation: float 22s ease-in-out infinite;
+}
+.blob-1 { width:500px; height:500px; background:#a855f7; top:-150px; left:-150px; }
+.blob-2 { width:450px; height:450px; background:#06b6d4; top:30%; right:-150px; animation-delay:-7s; }
+.blob-3 { width:500px; height:500px; background:#f59e0b; bottom:-180px; left:35%; animation-delay:-14s; }
+@keyframes float {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33% { transform:translate(60px,-40px) scale(1.1); }
+  66% { transform:translate(-40px,60px) scale(0.95); }
+}
+[data-theme="light"] .blob { opacity:0.3; }
+
+.app { max-width:720px; margin:0 auto; padding:24px 20px 60px; }
+
+/* TOPBAR */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px;
+}
+.topbar-left { display:flex; align-items:center; gap:12px; }
+.logo {
+  width:42px; height:42px; border-radius:12px;
+  background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  box-shadow:0 8px 24px rgba(168,85,247,0.35);
+}
+.brand { font-size:14px; font-weight:800; letter-spacing:-0.02em; }
+.brand small { display:block; font-size:10px; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+
+.theme-toggle {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--card); border:1px solid var(--border-strong);
+  color:var(--text); font-size:18px; cursor:pointer;
+  backdrop-filter:blur(20px);
+  transition:all 0.3s;
+  display:flex; align-items:center; justify-content:center;
+}
+.theme-toggle:hover { transform:rotate(180deg) scale(1.1); box-shadow:0 0 30px rgba(168,85,247,0.4); }
+
+/* HERO */
+.hero { text-align:center; padding:10px 0 30px; }
+.hero .icon-hero {
+  width:66px; height:66px; border-radius:20px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:32px; margin-bottom:16px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  box-shadow:0 12px 30px rgba(245,158,11,0.4);
+}
+.hero h1 {
+  font-size:clamp(26px,5vw,34px);
+  font-weight:800; letter-spacing:-0.03em;
+  margin-bottom:6px;
+  background:linear-gradient(135deg,#fff 0%,#fbbf24 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+[data-theme="light"] .hero h1 {
+  background:linear-gradient(135deg,#4c1d95 0%,#f59e0b 100%);
+  -webkit-background-clip:text; background-clip:text;
+}
+.hero p { color:var(--muted); font-size:13px; font-weight:500; }
+
+/* CARD */
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:26px;
+  backdrop-filter:blur(30px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  margin-bottom:18px;
+  animation:slideUp 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(30px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* FORM */
+.form-group { margin-bottom:18px; }
+.form-label {
+  display:flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:800;
+  color:var(--muted); margin-bottom:9px;
+  text-transform:uppercase; letter-spacing:1px;
+}
+.row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.input-unit { position:relative; }
+.input-unit .form-input { padding-right:52px; }
+.input-unit .unit-tag {
+  position:absolute; right:16px; top:50%;
+  transform:translateY(-50%);
+  font-size:11px; font-weight:800;
+  color:var(--accent-3); letter-spacing:0.5px;
+  pointer-events:none; text-transform:uppercase;
+}
+.form-input, .form-select {
+  width:100%; padding:14px 16px;
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  font-size:15px; font-family:inherit; font-weight:600;
+  background:rgba(255,255,255,0.04);
+  color:var(--text); outline:none;
+  transition:all 0.25s;
+}
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-select { background:rgba(255,255,255,0.9); }
+.form-input::placeholder { color:var(--muted-2); }
+.form-input:focus, .form-select:focus {
+  border-color:var(--accent-1);
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 0 0 4px rgba(168,85,247,0.15);
+}
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-select:focus { background:white; }
+.form-select {
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 16px center;
+  padding-right:44px; cursor:pointer;
+}
+.form-select option { background:#1a1a2e; color:#fff; }
+[data-theme="light"] .form-select option { background:#fff; color:#1e1b4b; }
+
+/* BUTTONS */
+.btn-group {
+  display:grid; grid-template-columns:1fr auto auto;
+  gap:10px; margin-top:6px;
+}
+.btn {
+  padding:15px 22px; border:none;
+  border-radius:12px; font-size:15px; font-weight:700;
+  font-family:inherit; cursor:pointer;
+  transition:all 0.25s;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-primary {
+  background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  color:white;
+  box-shadow:0 10px 30px rgba(168,85,247,0.35);
+}
+.btn-primary:hover {
+  transform:translateY(-2px);
+  box-shadow:0 15px 40px rgba(168,85,247,0.5);
+}
+.btn-icon {
+  background:var(--card); color:var(--text);
+  border:1.5px solid var(--border);
+  padding:15px; min-width:52px;
+}
+.btn-icon:hover {
+  background:var(--card-hover);
+  border-color:var(--accent-1);
+  transform:translateY(-2px);
+}
+
+/* ACTION BUTTON ROW (Save / Reset / PDF) */
+.action-row {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+}
+.action-btn {
+  padding:13px 16px;
+  border-radius:12px;
+  font-size:14px; font-weight:700;
+  font-family:inherit; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  transition:all 0.25s;
+  border:1.5px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+.action-btn:hover { transform:translateY(-2px); }
+.btn-save {
+  border-color:rgba(16,185,129,0.4);
+  background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));
+  color:#4ade80;
+}
+.btn-save:hover { box-shadow:0 10px 30px rgba(16,185,129,0.3); }
+.btn-reset {
+  border-color:rgba(244,63,94,0.4);
+  background:linear-gradient(135deg,rgba(244,63,94,0.15),rgba(244,63,94,0.05));
+  color:#fb7185;
+}
+.btn-reset:hover { box-shadow:0 10px 30px rgba(244,63,94,0.3); }
+.btn-pdf {
+  border-color:rgba(99,102,241,0.4);
+  background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(99,102,241,0.05));
+  color:#818cf8;
+}
+.btn-pdf:hover { box-shadow:0 10px 30px rgba(99,102,241,0.3); }
+
+[data-theme="light"] .btn-save { color:#059669; }
+[data-theme="light"] .btn-reset { color:#e11d48; }
+[data-theme="light"] .btn-pdf { color:#4f46e5; }
+
+/* ERROR */
+.error-box {
+  display:none; padding:13px 16px;
+  background:rgba(244,63,94,0.12);
+  border:1px solid rgba(244,63,94,0.3);
+  border-radius:12px;
+  color:#fda4af; font-size:13px; font-weight:600;
+  margin-bottom:14px;
+}
+[data-theme="light"] .error-box { color:var(--danger); }
+
+/* RESULTS */
+.result-card { display:none; animation:slideUp 0.7s; }
+.result-card.show { display:block; }
+
+.stats-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:9px; margin-bottom:20px;
+}
+.stat {
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:12px; padding:13px 10px; text-align:center;
+  transition:all 0.25s;
+}
+.stat:hover { background:var(--card-hover); transform:translateY(-2px); }
+.stat-label {
+  font-size:9px; text-transform:uppercase;
+  letter-spacing:0.8px; color:var(--muted);
+  font-weight:800; margin-bottom:5px;
+}
+.stat-value {
+  font-size:17px; font-weight:800;
+  font-family:'JetBrains Mono',monospace;
+}
+.stat-unit { font-size:9px; color:var(--accent-3); font-weight:700; margin-left:2px; }
+
+.highlight {
+  border-radius:18px; padding:20px;
+  margin-bottom:12px;
+  display:flex; align-items:center; gap:16px;
+  transition:transform 0.3s;
+}
+.highlight:hover { transform:translateY(-3px); }
+.highlight-light {
+  background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));
+  border:1.5px solid rgba(245,158,11,0.35);
+}
+.highlight-fan {
+  background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(6,182,212,0.05));
+  border:1.5px solid rgba(6,182,212,0.35);
+}
+.highlight-socket-2 {
+  background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(34,197,94,0.05));
+  border:1.5px solid rgba(34,197,94,0.35);
+}
+.highlight-socket-3 {
+  background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));
+  border:1.5px solid rgba(239,68,68,0.35);
+}
+.highlight-load {
+  background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(168,85,247,0.05));
+  border:1.5px solid rgba(168,85,247,0.35);
+}
+.highlight-icon {
+  font-size:34px;
+  filter:drop-shadow(0 4px 12px currentColor);
+  animation:iconBounce 3s ease-in-out infinite;
+}
+@keyframes iconBounce {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-5px); }
+}
+.highlight-label {
+  font-size:10px; text-transform:uppercase;
+  letter-spacing:1.2px; font-weight:800;
+  opacity:0.75; margin-bottom:4px;
+}
+.highlight-value {
+  font-size:20px; font-weight:800;
+  letter-spacing:-0.02em; line-height:1.2;
+}
+.highlight-light .highlight-value { color:#fbbf24; }
+.highlight-fan .highlight-value { color:#22d3ee; }
+.highlight-socket-2 .highlight-value { color:#4ade80; }
+.highlight-socket-3 .highlight-value { color:#f87171; }
+.highlight-load .highlight-value { color:#a855f7; }
+[data-theme="light"] .highlight-light .highlight-value { color:#b45309; }
+[data-theme="light"] .highlight-fan .highlight-value { color:#0e7490; }
+[data-theme="light"] .highlight-socket-2 .highlight-value { color:#15803d; }
+[data-theme="light"] .highlight-socket-3 .highlight-value { color:#b91c1c; }
+[data-theme="light"] .highlight-load .highlight-value { color:#6d28d9; }
+
+/* DIVIDER */
+.divider {
+  display:flex; align-items:center; gap:12px;
+  margin:20px 0 14px;
+  color:var(--muted);
+  font-size:11px; font-weight:800;
+  text-transform:uppercase; letter-spacing:1.5px;
+}
+.divider::before, .divider::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,var(--border-strong),transparent);
+}
+
+/* HISTORY TABLE */
+.history-title {
+  display:flex; align-items:center; gap:10px;
+  font-size:14px; font-weight:800;
+  margin-bottom:16px;
+  color:var(--text);
+}
+.history-title .badge {
+  background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  color:white;
+  font-size:11px; font-weight:800;
+  padding:3px 10px;
+  border-radius:100px;
+}
+.table-wrap {
+  overflow-x:auto;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+thead { background:rgba(255,255,255,0.05); }
+th {
+  padding:12px 10px;
+  text-align:left;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  color:var(--muted);
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+td {
+  padding:12px 10px;
+  border-bottom:1px solid var(--border);
+  font-weight:600;
+  color:var(--text);
+  white-space:nowrap;
+}
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:rgba(255,255,255,0.03); }
+
+.chip {
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:100px;
+  font-size:11px;
+  font-weight:800;
+  background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(99,102,241,0.2));
+  color:var(--accent-1);
+  border:1px solid rgba(168,85,247,0.3);
+}
+.del-btn {
+  background:rgba(244,63,94,0.15);
+  border:1px solid rgba(244,63,94,0.3);
+  color:#fb7185;
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all 0.2s;
+}
+.del-btn:hover { background:rgba(244,63,94,0.3); }
+
+.empty-state {
+  text-align:center;
+  padding:30px 20px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:600;
+}
+.empty-state .big { font-size:36px; margin-bottom:10px; opacity:0.6; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(120px);
+  background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  color:white; padding:13px 24px;
+  border-radius:100px;
+  font-weight:700; font-size:14px;
+  box-shadow:0 20px 50px rgba(168,85,247,0.5);
+  opacity:0; transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+  z-index:9999;
+  display:flex; align-items:center; gap:8px;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* RESPONSIVE */
+@media (max-width:520px) {
+  .app { padding:16px 14px 40px; }
+  .card { padding:20px 16px; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .btn-group { grid-template-columns:1fr auto; }
+  .btn-group .btn-icon:last-child { grid-column:span 2; }
+  .action-row { grid-template-columns:1fr; }
+}
+
+@media print {
+  .aurora, .topbar, .btn-group, .action-row, .toast, .history-card { display:none !important; }
+  body { background:white !important; color:black !important; }
+  .card, .highlight, .stat { border:1px solid #ccc; background:white !important; box-shadow:none !important; }
+  .highlight-value, .stat-value { color:#000 !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">⚡</div>
+      <div class="brand">
+        AutoCad
+        <small>Electrical</small>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+  </div>
+
+  <div class="hero">
+    <div class="icon-hero">💡</div>
+    <h1>Room Electrical Calculator</h1>
+    <p>Lights · Fans · Sockets · Load — all in one</p>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">🏠 Room Type</label>
+      <select id="roomType" class="form-select">
+        <option value="1">🛏️ Bedroom — 100 lux</option>
+        <option value="2">🛋️ Drawing Room — 150 lux</option>
+        <option value="3">🍽️ Dining Room — 150 lux</option>
+        <option value="4">🍳 Kitchen — 160 lux</option>
+        <option value="5">🚽 Toilet — 100 lux</option>
+        <option value="6">🚶 Passage &amp; Stairs — 80 lux</option>
+        <option value="7">🌤️ Balcony — 60 lux</option>
+        <option value="8">🌳 Outside — 40 lux</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">📏 Length</label>
+      <div class="row">
+        <div class="input-unit">
+          <input type="number" id="lengthFt" class="form-input" placeholder="12" min="0" step="1">
+          <span class="unit-tag">ft</span>
+        </div>
+        <div class="input-unit">
+          <input type="number" id="lengthIn" class="form-input" placeholder="0" min="0" max="11.999" step="0.001">
+          <span class="unit-tag">in</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">📐 Width</label>
+      <div class="row">
+        <div class="input-unit">
+          <input type="number" id="widthFt" class="form-input" placeholder="10" min="0" step="1">
+          <span class="unit-tag">ft</span>
+        </div>
+        <div class="input-unit">
+          <input type="number" id="widthIn" class="form-input" placeholder="0" min="0" max="11.999" step="0.001">
+          <span class="unit-tag">in</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">⬆️ Mounting Height</label>
+      <div class="input-unit">
+        <input type="number" id="hm" class="form-input" value="2.0" min="1.5" max="5" step="0.1">
+        <span class="unit-tag">m</span>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorMsg"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="calculate()">⚡ Calculate</button>
+      <button class="btn btn-icon" onclick="window.print()" title="Print">🖨️</button>
+      <button class="btn btn-icon" onclick="resetForm()" title="Reset Form">🔄</button>
+    </div>
+
+    <!-- NEW: SAVE / RESET / PDF -->
+    <div class="action-row" id="actionRow" style="display:none;">
+      <button class="action-btn btn-save" onclick="saveResult()">💾 Save</button>
+      <button class="action-btn btn-reset" onclick="resetAll()">🗑️ Reset All</button>
+      <button class="action-btn btn-pdf" onclick="downloadPDF()">📄 PDF</button>
+    </div>
+  </div>
+
+  <div class="card result-card" id="resultCard"></div>
+
+  <!-- HISTORY CARD -->
+  <div class="card history-card" id="historyCard" style="display:none;">
+    <div class="history-title">
+      📚 Saved Calculations
+      <span class="badge" id="historyCount">0</span>
+    </div>
+    <div class="table-wrap">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Size</th>
+            <th>💡 Lights</th>
+            <th>🌀 Fans</th>
+            <th>⚡ Load</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState">
+      <div class="big">📭</div>
+      No saved calculations yet. Calculate and click <strong>Save</strong>.
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   CONSTANTS
+   ========================================================= */
+const LLF = 0.9, n = 1, F = 1800;
+const ri_values = [0.75,1.00,1.25,1.50,2.00,2.50,3.00,4.00,5.00];
+const uf_values = [0.30,0.37,0.41,0.45,0.52,0.57,0.60,0.65,0.69];
+const roomLux = {1:100,2:150,3:150,4:160,5:100,6:80,7:60,8:40};
+const roomMeta = {
+  1:{name:'Bedroom',icon:'🛏️'},
+  2:{name:'Drawing Room',icon:'🛋️'},
+  3:{name:'Dining Room',icon:'🍽️'},
+  4:{name:'Kitchen',icon:'🍳'},
+  5:{name:'Toilet',icon:'🚽'},
+  6:{name:'Passage',icon:'🚶'},
+  7:{name:'Balcony',icon:'🌤️'},
+  8:{name:'Outside',icon:'🌳'}
+};
+
+let lastResult = null;  // store last calculation
+
+/* =========================================================
+   UF INTERPOLATION
+   ========================================================= */
+function calculateUF(ri) {
+  if (ri <= ri_values[0]) {
+    const s = (uf_values[1] - uf_values[0]) / (ri_values[1] - ri_values[0]);
+    return Math.max(uf_values[0] - (ri_values[0] - ri) * s, 0.19);
+  }
+  if (ri >= ri_values[8]) {
+    const s = (uf_values[8] - uf_values[7]) / (ri_values[8] - ri_values[7]);
+    return Math.min(uf_values[8] + (ri - ri_values[8]) * s, 0.85);
+  }
+  for (let i = 0; i < 8; i++) {
+    if (ri >= ri_values[i] && ri <= ri_values[i+1]) {
+      return uf_values[i] + (ri - ri_values[i]) * (uf_values[i+1] - uf_values[i]) / (ri_values[i+1] - ri_values[i]);
+    }
+  }
+  return 0.30;
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function showError(msg) {
+  const e = document.getElementById('errorMsg');
+  e.textContent = msg;
+  e.style.display = 'block';
+}
+function clearError() { document.getElementById('errorMsg').style.display = 'none'; }
+
+let toastTimer;
+function toast(msg, icon = '✅') {
+  const t = document.getElementById('toast');
+  t.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* =========================================================
+   SOCKET CALCULATION
+   ========================================================= */
+function calculateSockets(roomType, area) {
+  let pin2 = 0, pin3 = 0;
+  const base = Math.max(1, Math.ceil(area / 15));
+  switch(roomType) {
+    case 1: pin2 = base + 1; pin3 = base + 1; break;
+    case 2: pin2 = base + 1; pin3 = base + 2; break;
+    case 3: pin2 = base;     pin3 = base + 1; break;
+    case 4: pin2 = base + 2; pin3 = base + 3; break;
+    case 5: pin2 = 1;        pin3 = 1;        break;
+    case 6: pin2 = 1;        pin3 = 0;        break;
+    case 7: pin2 = 1;        pin3 = 0;        break;
+    case 8: pin2 = 1;        pin3 = 0;        break;
+  }
+  return { pin2, pin3 };
+}
+
+/* =========================================================
+   MAIN CALCULATION
+   ========================================================= */
+function calculate() {
+  clearError();
+
+  const roomType = parseInt(document.getElementById('roomType').value);
+  const lengthFt = parseFloat(document.getElementById('lengthFt').value);
+  const lengthIn = parseFloat(document.getElementById('lengthIn').value) || 0;
+  const widthFt  = parseFloat(document.getElementById('widthFt').value);
+  const widthIn  = parseFloat(document.getElementById('widthIn').value) || 0;
+  const hm       = parseFloat(document.getElementById('hm').value) || 2.0;
+
+  if (isNaN(lengthFt) || lengthFt < 0) return showError('Enter valid length (feet).');
+  if (lengthFt === 0 && lengthIn === 0) return showError('Length cannot be zero.');
+  if (lengthIn < 0 || lengthIn > 11.999) return showError('Length inches 0 – 11.999.');
+  if (isNaN(widthFt) || widthFt < 0) return showError('Enter valid width (feet).');
+  if (widthFt === 0 && widthIn === 0) return showError('Width cannot be zero.');
+  if (widthIn < 0 || widthIn > 11.999) return showError('Width inches 0 – 11.999.');
+  if (hm <= 0 || hm > 10) return showError('Height 1.5 – 5 m.');
+
+  const lm = lengthFt * 0.3048 + lengthIn * 0.0254;
+  const wm = widthFt  * 0.3048 + widthIn  * 0.0254;
+  const E  = roomLux[roomType];
+
+  const ri = (lm * wm) / (hm * (lm + wm));
+  const uf = calculateUF(ri);
+
+  const area = lm * wm;
+  const Nf = (E * area) / (n * F * uf * LLF);
+  let Ni = Math.floor(Nf); if (Nf > Ni) Ni++;
+  const Nr = Math.round(Nf * 100) / 100;
+  const sqft = area * 10.764;
+
+  let fans = 0, exhaust = 0;
+  if (roomType === 5) exhaust = 1;
+  else if (roomType === 4) exhaust = 2;
+  else if ([6,7,8].includes(roomType)) { fans = 0; exhaust = 0; }
+  else fans = Math.ceil(sqft / 100);
+
+  let bulbs = 0, tube = 0;
+  if ([4,5,7,8].includes(roomType)) bulbs = Ni;
+  else {
+    if (Nf <= 1.5) { tube = 1; bulbs = 0; }
+    else if (Nf <= 2.5) { tube = 1; bulbs = 2; }
+    else if (Nf <= 3.5) { tube = 2; bulbs = 2; }
+    else { tube = Math.round(Nf/2); bulbs = Math.round(Nf/2); }
+  }
+
+  const lightText = [4,5,7,8].includes(roomType)
+    ? `${bulbs} Bulb${bulbs!==1?'s':''}`
+    : `${tube} Tubelight${tube!==1?'s':''} + ${bulbs} Bulb${bulbs!==1?'s':''}`;
+
+  let fanText;
+  if (roomType === 5) fanText = '1 Exhaust Fan';
+  else if (roomType === 4) fanText = '2 Exhaust Fans';
+  else if ([6,7,8].includes(roomType)) fanText = 'Not Required';
+  else fanText = `${fans} Ceiling Fan${fans!==1?'s':''}`;
+
+  const sockets = calculateSockets(roomType, area);
+
+  const W_BULB = 15, W_TUBE = 20, W_FAN = 75, W_EXH = 40, W_SOCK2 = 100, W_SOCK3 = 500;
+
+  const lightW = bulbs * W_BULB + tube * W_TUBE;
+  const fanW   = fans * W_FAN + exhaust * W_EXH;
+  const socketW = sockets.pin2 * W_SOCK2 + sockets.pin3 * W_SOCK3;
+
+  const totalW = lightW + fanW + socketW;
+  const totalKW = totalW / 1000;
+
+  const V = 220, PF = 0.9;
+  const current = totalW / (V * PF);
+
+  const DIVERSITY = 0.7;
+  const demandW = totalW * DIVERSITY;
+  const demandCurrent = current * DIVERSITY;
+
+  let wire = '1.0 mm²';
+  if (demandCurrent > 6)  wire = '1.5 mm²';
+  if (demandCurrent > 10) wire = '2.5 mm²';
+  if (demandCurrent > 16) wire = '4.0 mm²';
+  if (demandCurrent > 25) wire = '6.0 mm²';
+
+  let mcb = 6;
+  if (demandCurrent > 6)  mcb = 10;
+  if (demandCurrent > 10) mcb = 16;
+  if (demandCurrent > 16) mcb = 20;
+  if (demandCurrent > 20) mcb = 32;
+
+  const meta = roomMeta[roomType];
+
+  /* Save data to lastResult */
+  lastResult = {
+    roomType, meta, lengthFt, lengthIn, widthFt, widthIn, hm,
+    lm, wm, area, ri, uf, Nr,
+    lightText, fanText,
+    bulbs, tube, fans, exhaust,
+    sockets, lightW, fanW, socketW, totalW, totalKW,
+    current, demandW, demandCurrent, wire, mcb,
+    E
+  };
+
+  const html = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <div style="font-size:32px;">${meta.icon}</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;">${meta.name}</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:700;">${E} lux · ${hm.toFixed(1)} m height · ${area.toFixed(2)} m²</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Length</div><div class="stat-value">${lm.toFixed(2)}<span class="stat-unit">m</span></div></div>
+      <div class="stat"><div class="stat-label">Width</div><div class="stat-value">${wm.toFixed(2)}<span class="stat-unit">m</span></div></div>
+      <div class="stat"><div class="stat-label">Area</div><div class="stat-value">${area.toFixed(2)}<span class="stat-unit">m²</span></div></div>
+      <div class="stat"><div class="stat-label">RI</div><div class="stat-value">${ri.toFixed(3)}</div></div>
+      <div class="stat"><div class="stat-label">UF</div><div class="stat-value">${uf.toFixed(4)}</div></div>
+      <div class="stat"><div class="stat-label">N</div><div class="stat-value">${Nr.toFixed(2)}</div></div>
+    </div>
+
+    <div class="highlight highlight-light">
+      <div class="highlight-icon">💡</div>
+      <div>
+        <div class="highlight-label">Lights Required</div>
+        <div class="highlight-value">${lightText}</div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-fan">
+      <div class="highlight-icon">🌀</div>
+      <div>
+        <div class="highlight-label">Fans Required</div>
+        <div class="highlight-value">${fanText}</div>
+      </div>
+    </div>
+
+    <div class="divider">SOCKETS</div>
+
+    <div class="highlight highlight-socket-2">
+      <div class="highlight-icon">🔌</div>
+      <div>
+        <div class="highlight-label">2-Pin Sockets</div>
+        <div class="highlight-value">${sockets.pin2} Socket${sockets.pin2!==1?'s':''}</div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-socket-3">
+      <div class="highlight-icon">🔌</div>
+      <div>
+        <div class="highlight-label">3-Pin Sockets</div>
+        <div class="highlight-value">${sockets.pin3} Socket${sockets.pin3!==1?'s':''}</div>
+      </div>
+    </div>
+
+    <div class="divider">LOAD ANALYSIS</div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">💡 Light Load</div><div class="stat-value">${lightW}<span class="stat-unit">W</span></div></div>
+      <div class="stat"><div class="stat-label">🌀 Fan Load</div><div class="stat-value">${fanW}<span class="stat-unit">W</span></div></div>
+      <div class="stat"><div class="stat-label">🔌 Socket Load</div><div class="stat-value">${socketW}<span class="stat-unit">W</span></div></div>
+    </div>
+
+    <div class="highlight highlight-load">
+      <div class="highlight-icon">⚡</div>
+      <div>
+        <div class="highlight-label">Total Connected Load</div>
+        <div class="highlight-value">${totalW} W <span style="font-size:14px;opacity:0.75;">(${totalKW.toFixed(2)} kW)</span></div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-load">
+      <div class="highlight-icon">📊</div>
+      <div>
+        <div class="highlight-label">Total Current (220V, PF 0.9)</div>
+        <div class="highlight-value">${current.toFixed(2)} A</div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-socket-2">
+      <div class="highlight-icon">⚖️</div>
+      <div>
+        <div class="highlight-label">Demand Load (Diversity 0.7)</div>
+        <div class="highlight-value">${demandW.toFixed(0)} W · ${demandCurrent.toFixed(2)} A</div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-light">
+      <div class="highlight-icon">🧵</div>
+      <div>
+        <div class="highlight-label">Recommended Wire Size</div>
+        <div class="highlight-value">${wire}</div>
+      </div>
+    </div>
+
+    <div class="highlight highlight-socket-3">
+      <div class="highlight-icon">🛡️</div>
+      <div>
+        <div class="highlight-label">Recommended MCB</div>
+        <div class="highlight-value">${mcb} A</div>
+      </div>
+    </div>
+  `;
+
+  const card = document.getElementById('resultCard');
+  card.innerHTML = html;
+  card.classList.add('show');
+
+  /* Show action buttons */
+  document.getElementById('actionRow').style.display = 'grid';
+
+  card.scrollIntoView({ behavior:'smooth', block:'start' });
+  toast('Calculation complete');
+}
+
+/* =========================================================
+   RESET FORM ONLY
+   ========================================================= */
+function resetForm() {
+  ['lengthFt','lengthIn','widthFt','widthIn'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('hm').value = '2.0';
+  document.getElementById('roomType').selectedIndex = 0;
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('actionRow').style.display = 'none';
+  clearError();
+  lastResult = null;
+}
+
+/* =========================================================
+   SAVE RESULT TO LOCALSTORAGE
+   ========================================================= */
+function saveResult() {
+  if (!lastResult) return toast('Calculate first!', '⚠️');
+
+  let saved = JSON.parse(localStorage.getItem('elecCalc') || '[]');
+
+  const entry = {
+    id: Date.now(),
+    room: lastResult.meta.name,
+    icon: lastResult.meta.icon,
+    size: `${lastResult.lengthFt}'${lastResult.lengthIn}" × ${lastResult.widthFt}'${lastResult.widthIn}"`,
+    area: lastResult.area.toFixed(2),
+    lights: lastResult.lightText,
+    fans: lastResult.fanText,
+    sockets: `${lastResult.sockets.pin2}×2pin + ${lastResult.sockets.pin3}×3pin`,
+    totalW: lastResult.totalW,
+    current: lastResult.current.toFixed(2),
+    wire: lastResult.wire,
+    mcb: lastResult.mcb
+  };
+
+  saved.unshift(entry);
+  if (saved.length > 20) saved = saved.slice(0, 20);
+  localStorage.setItem('elecCalc', JSON.stringify(saved));
+
+  renderHistory();
+  toast('Saved to history', '💾');
+}
+
+/* =========================================================
+   RENDER HISTORY
+   ========================================================= */
+function renderHistory() {
+  const saved = JSON.parse(localStorage.getItem('elecCalc') || '[]');
+  const card = document.getElementById('historyCard');
+  const body = document.getElementById('historyBody');
+  const empty = document.getElementById('emptyState');
+  const count = document.getElementById('historyCount');
+
+  count.textContent = saved.length;
+
+  if (saved.length === 0) {
+    card.style.display = 'block';
+    document.querySelector('.table-wrap').style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  card.style.display = 'block';
+  document.querySelector('.table-wrap').style.display = 'block';
+  empty.style.display = 'none';
+
+  body.innerHTML = saved.map(s => `
+    <tr>
+      <td><span class="chip">${s.icon} ${s.room}</span></td>
+      <td>${s.size}</td>
+      <td>${s.lights}</td>
+      <td>${s.fans}</td>
+      <td>${s.totalW} W · ${s.current} A</td>
+      <td><button class="del-btn" onclick="deleteEntry(${s.id})">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+/* =========================================================
+   DELETE ONE ENTRY
+   ========================================================= */
+function deleteEntry(id) {
+  let saved = JSON.parse(localStorage.getItem('elecCalc') || '[]');
+  saved = saved.filter(s => s.id !== id);
+  localStorage.setItem('elecCalc', JSON.stringify(saved));
+  renderHistory();
+  toast('Deleted', '🗑️');
+}
+
+/* =========================================================
+   RESET ALL (form + history)
+   ========================================================= */
+function resetAll() {
+  if (!confirm('Clear form and all saved calculations?')) return;
+  resetForm();
+  localStorage.removeItem('elecCalc');
+  renderHistory();
+  toast('All reset', '🔄');
+}
+
+/* =========================================================
+   DOWNLOAD AS PDF
+   ========================================================= */
+function downloadPDF() {
+  if (!lastResult) return toast('Calculate first!', '⚠️');
+
+  const { meta, lm, wm, area, ri, uf, Nr, E, hm,
+          lightText, fanText, sockets,
+          lightW, fanW, socketW, totalW, totalKW,
+          current, demandW, demandCurrent, wire, mcb } = lastResult;
+
+  /* Build PDF HTML */
+  const pdfHTML = `
+    <div style="font-family: 'Helvetica', 'Arial', sans-serif; padding: 30px; color: #1e1b4b; background: #fff;">
+      <div style="text-align:center; padding-bottom: 20px; border-bottom: 3px solid #a855f7; margin-bottom: 24px;">
+        <h1 style="margin:0; font-size:28px; color:#4c1d95;">⚡ AutoCad Electrical</h1>
+        <p style="margin:6px 0 0; color:#6b7280; font-size:13px;">Room Electrical Calculation Report</p>
+        <p style="margin:4px 0 0; color:#6b7280; font-size:11px;">Generated: ${new Date().toLocaleString()}</p>
+      </div>
+
+      <div style="background: #f5f3ff; padding: 16px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #a855f7;">
+        <h2 style="margin:0 0 6px; font-size:20px; color:#4c1d95;">${meta.icon} ${meta.name}</h2>
+        <p style="margin:0; color:#6b7280; font-size:13px;">
+          Target: <b>${E} lux</b> · Mounting height: <b>${hm.toFixed(1)} m</b> · Area: <b>${area.toFixed(2)} m²</b>
+        </p>
+      </div>
+
+      <h3 style="font-size: 15px; color:#4c1d95; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px;">📐 Room Details</h3>
+      <table style="width:100%; border-collapse:collapse; font-size: 13px; margin-bottom: 20px;">
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb; width:40%;"><b>Length</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${lm.toFixed(2)} m</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Width</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${wm.toFixed(2)} m</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Area</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${area.toFixed(2)} m²</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Room Index (RI)</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${ri.toFixed(3)}</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Utilization Factor (UF)</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${uf.toFixed(4)}</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Fixtures (N)</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${Nr.toFixed(2)}</td></tr>
+      </table>
+
+      <h3 style="font-size: 15px; color:#4c1d95; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px;">💡 Fixtures Required</h3>
+      <table style="width:100%; border-collapse:collapse; font-size: 13px; margin-bottom: 20px;">
+        <tr><td style="padding:8px; background:#fef3c7; border:1px solid #e5e7eb; width:40%;"><b>💡 Lights</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${lightText}</td></tr>
+        <tr><td style="padding:8px; background:#cffafe; border:1px solid #e5e7eb;"><b>🌀 Fans</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${fanText}</td></tr>
+        <tr><td style="padding:8px; background:#dcfce7; border:1px solid #e5e7eb;"><b>🔌 2-Pin Sockets</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${sockets.pin2}</td></tr>
+        <tr><td style="padding:8px; background:#fee2e2; border:1px solid #e5e7eb;"><b>🔌 3-Pin Sockets</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${sockets.pin3}</td></tr>
+      </table>
+
+      <h3 style="font-size: 15px; color:#4c1d95; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px;">⚡ Load Analysis</h3>
+      <table style="width:100%; border-collapse:collapse; font-size: 13px; margin-bottom: 20px;">
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb; width:40%;"><b>Light Load</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${lightW} W</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Fan Load</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${fanW} W</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Socket Load</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${socketW} W</td></tr>
+        <tr><td style="padding:8px; background:#ede9fe; border:1px solid #e5e7eb;"><b>Total Connected Load</b></td><td style="padding:8px; border:1px solid #e5e7eb;"><b>${totalW} W (${totalKW.toFixed(2)} kW)</b></td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Current (220V, PF 0.9)</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${current.toFixed(2)} A</td></tr>
+        <tr><td style="padding:8px; background:#f9fafb; border:1px solid #e5e7eb;"><b>Demand Load (×0.7)</b></td><td style="padding:8px; border:1px solid #e5e7eb;">${demandW.toFixed(0)} W · ${demandCurrent.toFixed(2)} A</td></tr>
+      </table>
+
+      <h3 style="font-size: 15px; color:#4c1d95; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px;">🧵 Recommendation</h3>
+      <table style="width:100%; border-collapse:collapse; font-size: 13px; margin-bottom: 20px;">
+        <tr><td style="padding:10px; background:#fef3c7; border:1px solid #e5e7eb; width:40%;"><b>Wire Size</b></td><td style="padding:10px; border:1px solid #e5e7eb;"><b style="color:#b45309;">${wire}</b></td></tr>
+        <tr><td style="padding:10px; background:#fee2e2; border:1px solid #e5e7eb;"><b>MCB Rating</b></td><td style="padding:10px; border:1px solid #e5e7eb;"><b style="color:#b91c1c;">${mcb} A</b></td></tr>
+      </table>
+
+      <div style="margin-top: 30px; padding-top: 16px; border-top: 1px solid #ddd; text-align:center; font-size: 11px; color:#9ca3af;">
+        Generated by AutoCad Electrical Calculator · github.com/XunidEmon
+      </div>
+    </div>
+  `;
+
+  const opt = {
+    margin: 0,
+    filename: `ElecCalc_${meta.name}_${Date.now()}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  toast('Generating PDF...', '📄');
+  html2pdf().set(opt).from(pdfHTML).save();
+}
+
+/* THEME */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') !== 'light';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+(function initTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('themeBtn').textContent = '☀️';
+  }
+})();
+
+/* Enter to calculate */
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter') calculate();
+  });
+});
+
+/* Initial render */
+renderHistory();
+</script>
+</body>
+</html>
